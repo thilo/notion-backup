@@ -58,7 +58,7 @@ async function exportFromNotion (format) {
       let { data: { results: tasks } } = await post('getTasks', { taskIds: [taskId] })
         , task = tasks.find(t => t.id === taskId)
       ;
-      console.warn(`Pages exported: ${task.status.pagesExported}`);
+      console.warn(`${format} Pages exported: ${task.status.pagesExported}`);
       if (task.state === 'success') {
         exportURL = task.status.exportURL;
         break;
@@ -86,15 +86,24 @@ async function run () {
     , mdFile = join(cwd, 'markdown.zip')
     , htmlDir = join(cwd, 'html')
     , htmlFile = join(cwd, 'html.zip')
-  ;
-  await exportFromNotion('markdown');
-  rmdirSync(mdDir, { recursive: true });
-  mkdirSync(mdDir, { recursive: true });
-  await extract(mdFile, { dir: mdDir });
-  await exportFromNotion('html');
-  rmdirSync(htmlDir, { recursive: true });
-  mkdirSync(htmlDir, { recursive: true });
-  await extract(htmlFile, { dir: htmlDir });
+    ;
+  myArgs = process.argv.slice(2);
+  switch (myArgs[0]) {
+    case 'markdown':
+      await exportFromNotion('markdown');
+      rmdirSync(mdDir, { recursive: true });
+      mkdirSync(mdDir, { recursive: true });
+      await extract(mdFile, { dir: mdDir });
+      break;
+    case 'html':
+      await exportFromNotion('html');
+      rmdirSync(htmlDir, { recursive: true });
+      mkdirSync(htmlDir, { recursive: true });
+      await extract(htmlFile, { dir: htmlDir });
+      break;
+    default:
+      console.warn('pass markdown or html as format param');
+  }
 }
 
 run();
