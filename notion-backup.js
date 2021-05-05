@@ -91,10 +91,6 @@ async function run () {
   rmdirSync(mdDir, { recursive: true });
   mkdirSync(mdDir, { recursive: true });
   await extract(mdFile, { dir: mdDir });
-  await exportFromNotion('html');
-  rmdirSync(htmlDir, { recursive: true });
-  mkdirSync(htmlDir, { recursive: true });
-  await extract(htmlFile, { dir: htmlDir });
 }
 
 run();
